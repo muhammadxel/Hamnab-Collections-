@@ -239,12 +239,18 @@ window.directWhatsAppOrder = function(productId) {
   const selectedSize = sizeSelect ? sizeSelect.value : product.sizes[0];
   const selectedColor = colorSelect ? colorSelect.value : product.colors[0];
 
+  const siteBaseUrl = window.location.origin;
+  const photoUrl = product.image.startsWith('http') 
+    ? product.image 
+    : `${siteBaseUrl}/${product.image.replace(/^\//, '')}`;
+
   const text = `*Direct Product Order - HAMNAB COLLECTIONS*\n\n` +
                `*Item:* ${product.name}\n` +
                `*Price:* ${formatNaira(product.price)}\n` +
                `*Selected Size:* ${selectedSize}\n` +
-               `*Selected Color:* ${selectedColor}\n\n` +
-               `Please let me know if this item is currently available for delivery.`;
+               `*Selected Color:* ${selectedColor}\n` +
+               `*Product Photo:* ${photoUrl}\n\n` +
+               `Please confirm if this piece is available for delivery.`;
 
   const waURL = `https://wa.me/${OFFICIAL_WHATSAPP}?text=${encodeURIComponent(text)}`;
   window.open(waURL, '_blank');
@@ -328,7 +334,7 @@ function closeCart() {
   cartOverlay.classList.remove('open');
 }
 
-// Generate WhatsApp Checkout Message
+// Generate WhatsApp Checkout Message with Photo Links
 function handleWhatsAppCheckout(e) {
   e.preventDefault();
 
@@ -342,15 +348,25 @@ function handleWhatsAppCheckout(e) {
   const address = document.getElementById('custAddress').value.trim();
   const notes = document.getElementById('custNotes').value.trim();
 
+  // Get current website base URL (e.g., https://hamnab-collections.vercel.app/)
+  const siteBaseUrl = window.location.origin;
+
   let totalSum = 0;
   let itemsBreakdown = "";
 
   cart.forEach((item, index) => {
     const itemTotal = item.price * item.qty;
     totalSum += itemTotal;
+    
+    // Construct direct photo link
+    const itemPhotoUrl = item.image.startsWith('http') 
+      ? item.image 
+      : `${siteBaseUrl}/${item.image.replace(/^\//, '')}`;
+
     itemsBreakdown += `${index + 1}. *${item.name}*\n` +
-                      `   - Size: ${item.size} | Color: ${item.color}\n` +
-                      `   - Qty: ${item.qty} x ${formatNaira(item.price)} = ${formatNaira(itemTotal)}\n`;
+                      `   • Size: ${item.size} | Color: ${item.color}\n` +
+                      `   • Qty: ${item.qty} x ${formatNaira(item.price)} = ${formatNaira(itemTotal)}\n` +
+                      `   • Item Photo: ${itemPhotoUrl}\n\n`;
   });
 
   const messageText = 
@@ -362,21 +378,20 @@ function handleWhatsAppCheckout(e) {
 - *Delivery Location:* ${address}
 ${notes ? `- *Special Instructions:* ${notes}\n` : ''}
 ----------------------------------------
-*Order Summary:*
-${itemsBreakdown}
-----------------------------------------
+*Ordered Items & Photos:*
+${itemsBreakdown}----------------------------------------
 *TOTAL AMOUNT:* *${formatNaira(totalSum)}*
 ----------------------------------------
-_Please confirm item availability and send payment details._`;
+_Please review the order and photos, confirm availability, and provide payment details._`;
 
   const encodedUrl = `https://wa.me/${OFFICIAL_WHATSAPP}?text=${encodeURIComponent(messageText)}`;
   
-  // Clear cart upon checkout handover (optional, keeps order clean)
+  // Clear cart and close drawer
   cart = [];
   saveCart();
   updateCartUI();
   closeCart();
 
-  // Launch WhatsApp
+  // Open WhatsApp
   window.open(encodedUrl, '_blank');
 }
