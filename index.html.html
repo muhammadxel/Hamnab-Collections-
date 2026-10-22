@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HAMNAB COLLECTIONS | Modest Fashion, Abayas, Hijabs & Bespoke Tailoring</title>
+  <meta name="description" content="Discover premium modest women's wear at HAMNAB COLLECTIONS: bespoke Abayas, Hijabs, Jalab, Veils, Shoes, Jewellery, and Perfumes in Kaduna, Nigeria.">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    Official CAC Registered Enterprise (BN: 8586499) • Direct Orders Delivered Across Nigeria
+  </div>
+
+  <!-- Header & Navigation -->
+  <header class="header">
+    <div class="container nav-container">
+      <a href="#home" class="brand-logo">
+        <img src="images/logo.png" alt="HAMNAB COLLECTIONS Monogram Logo">
+        <span class="brand-title">HAMNAB</span>
+      </a>
+
+      <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu">☰</button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#store" onclick="filterByCategory('all')">Shop All</a></li>
+        <li><a href="#store" onclick="filterByCategory('abayas')">Abayas</a></li>
+        <li><a href="#store" onclick="filterByCategory('hijabs')">Hijabs</a></li>
+        <li><a href="#store" onclick="filterByCategory('jalab')">Jalab</a></li>
+        <li><a href="#store" onclick="filterByCategory('veils-caps')">Veils & Caps</a></li>
+        <li><a href="#store" onclick="filterByCategory('shoes')">Shoes</a></li>
+        <li><a href="#store" onclick="filterByCategory('jewellery')">Jewellery</a></li>
+        <li><a href="#store" onclick="filterByCategory('perfumes')">Perfumes</a></li>
+        <li><a href="#about-owner">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="cart-toggle-btn" id="openCartBtn" aria-label="View Shopping Cart">
+          <span>Bag</span>
+          <span class="cart-badge" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="container hero-content">
+      <p class="hero-subtitle">Modest Fashion • Couture Tailoring</p>
+      <h1>Elegance Crafted for the Modern Modest Woman</h1>
+      <p>Discover ready-to-wear and bespoke Abayas, luxury Hijabs, Jalab designs, fine perfumes, and jewelry handmade with uncompromising precision.</p>
+      <div class="btn-group">
+        <a href="#store" class="btn btn-primary">Browse Collection</a>
+        <a href="https://wa.me/2348064474487?text=Hello%20HAMNAB%20COLLECTIONS,%20I%20would%20like%20to%20enquire%20about%20your%20fashion%20catalog." class="btn btn-whatsapp" target="_blank" rel="noopener">WhatsApp Enquiries</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Store Catalog Section -->
+  <section class="section-padding" id="store">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our Collections</h2>
+        <p>Curated garments, custom tailoring, and premium accessories</p>
+      </div>
+
+      <!-- Quick Category Selectors -->
+      <div class="category-tiles" id="categoryChips">
+        <div class="category-chip active" data-cat="all">All Items</div>
+        <div class="category-chip" data-cat="abayas">Abayas</div>
+        <div class="category-chip" data-cat="hijabs">Hijabs</div>
+        <div class="category-chip" data-cat="jalab">Jalab / Jallab</div>
+        <div class="category-chip" data-cat="veils-caps">Veils & Caps</div>
+        <div class="category-chip" data-cat="shoes">Shoes</div>
+        <div class="category-chip" data-cat="jewellery">Jewellery</div>
+        <div class="category-chip" data-cat="perfumes">Perfumes</div>
+      </div>
+
+      <!-- Search and Sort Filter Controls -->
+      <div class="store-controls" style="margin-top: 24px;">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by product name or keyword...">
+        <select id="sortSelect" class="sort-select">
+          <option value="default">Sort by: Default</option>
+          <option value="low-to-high">Price: Low to High</option>
+          <option value="high-to-low">Price: High to Low</option>
+          <option value="name">Alphabetical</option>
+        </select>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="product-grid" id="productGrid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Bespoke / Custom Tailoring Banner -->
+  <section class="container" style="margin-bottom: 70px;">
+    <div class="bespoke-section">
+      <div class="bespoke-content">
+        <h3>Custom Fashion & Made-to-Order Tailoring</h3>
+        <p>Looking for a specific length, bespoke embroidery, or made-to-measure Jalab and Abaya cut? Aisha Ibrahim and our tailoring team bring your exact modest silhouettes to life.</p>
+        <a href="https://wa.me/2348064474487?text=Hello%20HAMNAB%20COLLECTIONS,%20I%20am%20interested%20in%20a%20bespoke%20custom%20tailoring%20order." class="btn btn-primary" target="_blank" rel="noopener">Book Bespoke Tailoring</a>
+      </div>
+      <div>
+        <ul style="list-style: none; line-height: 2; color: #f1ebd8; font-size: 0.95rem;">
+          <li>✓ Precise individual measurements</li>
+          <li>✓ High-grade imported fabrics & trims</li>
+          <li>✓ Bridal, Eid & Special Occasion commissions</li>
+          <li>✓ Nationwide delivery across Nigeria</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- About the Founder / CEO -->
+  <section class="section-padding owner-section" id="about-owner">
+    <div class="container owner-grid">
+      <div class="owner-image-wrapper">
+        <img src="images/founder.jpg" alt="Aisha Ibrahim - Founder & CEO of HAMNAB COLLECTIONS">
+      </div>
+      <div class="owner-text">
+        <p class="owner-role">Founder & Creative Director</p>
+        <h3>Aisha Ibrahim</h3>
+        <p>Welcome to <strong>HAMNAB COLLECTIONS</strong>. Founded with a deep passion for the craft of modest attire, our mission is to ensure every woman feels dignified, stylish, and comfortable without compromising her values.</p>
+        <p>From initial sketches and fabric curation to precision stitching and hand-finished detailing, every Abaya, Jalab, and accessory reflects an uncompromising standard of modesty, quality, and affordability.</p>
+        <p>Whether you select a ready-to-wear piece from our Kaduna atelier or order a bespoke tailored garment sent anywhere in Nigeria, we dedicate personal care to every fold, seam, and package.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact & Verification Section -->
+  <section class="section-padding" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <h2>Contact & Atelier Information</h2>
+        <p>Enquire, visit, or chat directly with our team</p>
+      </div>
+
+      <div class="contact-grid">
+        <!-- Physical Location & CAC Details -->
+        <div class="contact-card">
+          <h3 style="font-family: var(--font-serif); margin-bottom: 18px;">Registered Atelier</h3>
+          
+          <div class="contact-item">
+            <div>
+              <strong>Physical Location</strong>
+              <p>Yangora Plaza, Zaria Road by Abeokuta Street,<br>Kaduna, Kaduna State, Nigeria (Postal: 800211)</p>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div>
+              <strong>Official Email</strong>
+              <p><a href="mailto:hamnabcollection87@gmail.com">hamnabcollection87@gmail.com</a></p>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div>
+              <strong>Direct WhatsApp & Call Line</strong>
+              <p><a href="tel:+2348064474487">+234 806 447 4487</a></p>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div>
+              <strong>Opening Hours</strong>
+              <p>Monday – Saturday: 9:00 AM – 6:30 PM<br>Sunday: Closed (WhatsApp orders accepted 24/7)</p>
+            </div>
+          </div>
+
+          <div class="cac-badge">
+            ✓ Verified Business Name: CAC BN 8586499
+          </div>
+        </div>
+
+        <!-- Direct Instant Message Form -->
+        <div class="contact-card">
+          <h3 style="font-family: var(--font-serif); margin-bottom: 18px;">Send a Direct WhatsApp Message</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+            Have a question about sizing or bespoke tailoring? Complete this form to launch an instant pre-filled WhatsApp chat with our customer support.
+          </p>
+          <form id="quickContactForm">
+            <div style="margin-bottom: 12px;">
+              <input type="text" id="contactName" placeholder="Your Full Name" required style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: var(--radius-sm);">
+            </div>
+            <div style="margin-bottom: 12px;">
+              <input type="text" id="contactSubject" placeholder="Subject (e.g. Abaya custom sizing, Bulk Hijab orders)" required style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: var(--radius-sm);">
+            </div>
+            <div style="margin-bottom: 16px;">
+              <textarea id="contactMessage" rows="4" placeholder="Your Message..." required style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: var(--radius-sm);"></textarea>
+            </div>
+            <button type="submit" class="btn btn-whatsapp" style="width: 100%;">Open Chat in WhatsApp</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shopping Cart Drawer / Modal -->
+  <div class="cart-overlay" id="cartOverlay">
+    <div class="cart-drawer">
+      <div class="cart-header">
+        <h3>Shopping Bag (<span id="cartDrawerCount">0</span>)</h3>
+        <button class="cart-close-btn" id="closeCartBtn" aria-label="Close cart">&times;</button>
+      </div>
+
+      <div class="cart-items" id="cartItemsList">
+        <!-- Cart Items loaded via app.js -->
+      </div>
+
+      <div class="cart-footer">
+        <div class="cart-total-row">
+          <span>Subtotal:</span>
+          <span id="cartTotalDisplay">₦0</span>
+        </div>
+
+        <!-- Customer Checkout Info Form -->
+        <form id="whatsappCheckoutForm" class="checkout-form">
+          <input type="text" id="custName" placeholder="Your Full Name *" required>
+          <input type="tel" id="custPhone" placeholder="Phone Number (Call / WhatsApp) *" required>
+          <input type="text" id="custAddress" placeholder="Delivery State / City / Street Address *" required>
+          <textarea id="custNotes" rows="2" placeholder="Custom sizing notes, height in inches, or preferred colors"></textarea>
+          
+          <button type="submit" class="btn btn-whatsapp" style="width: 100%;">
+            Send Order via WhatsApp
+          </button>
+        </form>
+
+        <p style="font-size: 0.72rem; color: #888; text-align: center; margin-top: 8px;">
+          Note: Clicking opens WhatsApp with your pre-filled bill. Orders are confirmed and prepared once received by our team.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>HAMNAB COLLECTIONS</h4>
+          <p style="font-size: 0.85rem; line-height: 1.7; margin-bottom: 12px;">
+            The home of modest elegance in Nigeria. Specializing in ready-to-wear & bespoke Abayas, Hijabs, Jalab gowns, and lifestyle accessories.
+          </p>
+          <p style="font-size: 0.8rem; color: #a0a0a0;">CAC Registration No: <strong>8586499</strong></p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Categories</h4>
+          <ul class="footer-links">
+            <li><a href="#store" onclick="filterByCategory('abayas')">Abayas</a></li>
+            <li><a href="#store" onclick="filterByCategory('hijabs')">Hijabs</a></li>
+            <li><a href="#store" onclick="filterByCategory('jalab')">Jalab / Jallab</a></li>
+            <li><a href="#store" onclick="filterByCategory('veils-caps')">Veils & Caps</a></li>
+            <li><a href="#store" onclick="filterByCategory('shoes')">Shoes & Footwear</a></li>
+            <li><a href="#store" onclick="filterByCategory('jewellery')">Jewellery</a></li>
+            <li><a href="#store" onclick="filterByCategory('perfumes')">Perfumes</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about-owner">About Aisha Ibrahim</a></li>
+            <li><a href="#contact">Our Atelier</a></li>
+            <li><a href="https://wa.me/2348064474487" target="_blank" rel="noopener">Direct WhatsApp Support</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Atelier Address</h4>
+          <p style="font-size: 0.85rem; line-height: 1.7;">
+            Yangora Plaza, Zaria Road by Abeokuta Street,<br>
+            Kaduna State, Nigeria.<br>
+            Email: hamnabcollection87@gmail.com<br>
+            Tel / WhatsApp: +234 806 447 4487
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        &copy; 2026 HAMNAB COLLECTIONS. All Rights Reserved. Modest Fashion Designed with Excellence.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="products.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
