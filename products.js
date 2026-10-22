@@ -24,7 +24,7 @@ const PRODUCTS = [
     name: "Royal Gold Embroidered Bisht Abaya",
     category: "abayas",
     price: 49000,
-    image: "abaya-2.jpeg",
+    image: "abaya-2.jpg",
     description: "Premium ceremonial abaya finished with delicate gold zari embroidery along the front lapels.",
     sizes: ["54", "56", "58"],
     colors: ["Black & Gold", "Cream & Bronze"],
