@@ -11,7 +11,7 @@ const PRODUCTS = [
     name: "Classic Emirati Black Abaya",
     category: "abayas",
     price: 38500,
-    image: "placeholder.jpg",
+    image: "abaya-1.jpg", // <-- Updated here
     description: "Tailored with breathable Nida fabric, featuring subtle sleeve cuff detailing and a clean modest silhouette.",
     sizes: ["52", "54", "56", "58", "60"],
     colors: ["Jet Black", "Midnight Navy"],
@@ -97,7 +97,7 @@ const PRODUCTS = [
     name: "Pointed Low-Block Mule Sandals",
     category: "shoes",
     price: 24000,
-    image: "placeholder.jpg",
+    image: "shoe-1.jpg", // <-- Updated here
     description: "Comfort-cushioned faux leather mules with an elegant 2-inch block heel, ideal for prayer-friendly slip-on ease.",
     sizes: ["38", "39", "40", "41", "42"],
     colors: ["Tan Nude", "Ebony Black"],
