@@ -785,12 +785,28 @@ button, input, select, textarea {
   color: var(--primary-gold);
 }
 
+/* --- FOOTER ATTRIBUTION --- */
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 20px;
   text-align: center;
   font-size: 0.8rem;
   color: #888;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.powered-by {
+  font-size: 0.72rem;
+  color: #777777;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.powered-by span {
+  color: var(--primary-gold);
+  font-weight: 600;
 }
 
 /* --- RESPONSIVE BREAKPOINTS --- */
