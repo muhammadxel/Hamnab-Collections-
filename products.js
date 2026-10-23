@@ -78,7 +78,7 @@ const PRODUCTS = [
   {
     id: "jl-001",
     name: "Handcrafted Moroccan Cut Jalab",
-    category: "Jalab",
+    category: "jalab",
     price: 12000,
     image: "jalbab-1.jpg",
     description: "Simple fabric Jalbab.",
