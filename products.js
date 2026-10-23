@@ -37,7 +37,7 @@ const PRODUCTS = [
     name: "Royal Gold Embroidered Bisht Abaya",
     category: "abayas",
     price: 19000,
-    image: "placeholder.jpg",
+    image: "abaya-3.jpg",
     description: "Diamond Embellished Abaya.",
     sizes: ["54", "56", "58"],
     colors: ["Black & Gold", "Cream & Bronze"],
@@ -78,7 +78,7 @@ const PRODUCTS = [
   {
     id: "jl-001",
     name: "Handcrafted Moroccan Cut Jalab",
-    category: "jalab",
+    category: "jalbab & Jalab",
     price: 32000,
     image: "placeholder.jpg",
     description: "Artisanal sfifa-trimmed Jalab cut from premium breathable cotton-linen blend fabric.",
