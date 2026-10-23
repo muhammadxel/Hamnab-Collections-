@@ -108,7 +108,7 @@ const PRODUCTS = [
   {
     id: "sh-001",
     name: "Pointed Low-Block Mule Sandals",
-    category: "shoes & Bags",
+    category: "shoes",
     price: 24000,
     image: "shoe-1.jpeg", // <-- Updated here
     description: "Comfort-cushioned faux leather mules with an elegant 2-inch block heel, ideal for prayer-friendly slip-on ease.",
@@ -121,7 +121,7 @@ const PRODUCTS = [
   {
     id: "sh-002",
     name: "Pointed Low-Block Mule Sandals",
-    category: "shoes & Bags",
+    category: "shoes",
     price: 24000,
     image: "bag-1.jpeg", // <-- Updated here
     description: "Simple Handbag",
