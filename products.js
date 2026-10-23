@@ -33,12 +33,12 @@ const PRODUCTS = [
     featured: true
   },
   {
-    id: "ab-002",
+    id: "ab-003",
     name: "Royal Gold Embroidered Bisht Abaya",
     category: "abayas",
-    price: 49000,
+    price: 19000,
     image: "placeholder.jpg",
-    description: "Premium ceremonial abaya finished with delicate gold zari embroidery along the front lapels.",
+    description: "Diamond Embellished Abaya.",
     sizes: ["54", "56", "58"],
     colors: ["Black & Gold", "Cream & Bronze"],
     inStock: true,
@@ -108,10 +108,23 @@ const PRODUCTS = [
   {
     id: "sh-001",
     name: "Pointed Low-Block Mule Sandals",
-    category: "shoes",
+    category: "shoes & Bags",
     price: 24000,
     image: "shoe-1.jpeg", // <-- Updated here
     description: "Comfort-cushioned faux leather mules with an elegant 2-inch block heel, ideal for prayer-friendly slip-on ease.",
+    sizes: ["38", "39", "40", "41", "42"],
+    colors: ["Tan Nude", "Ebony Black"],
+    inStock: true,
+    isCustomOrder: false,
+    featured: true
+  },
+  {
+    id: "sh-002",
+    name: "Pointed Low-Block Mule Sandals",
+    category: "shoes & Bags",
+    price: 24000,
+    image: "bag-1.jpeg", // <-- Updated here
+    description: "Simple Handbag",
     sizes: ["38", "39", "40", "41", "42"],
     colors: ["Tan Nude", "Ebony Black"],
     inStock: true,
@@ -125,7 +138,7 @@ const PRODUCTS = [
     name: "Gold-Plated Stainless Steel Ayatul Kursi Cuff",
     category: "jewellery",
     price: 14500,
-    image: "placeholder.jpg",
+    image: "jewellery-1.jpg",
     description: "Tarnish-free 18k gold-dipped calligraphy cuff bracelet. Waterproof and hypoallergenic.",
     sizes: ["Adjustable"],
     colors: ["18k Gold", "Rose Gold", "Silver"],
