@@ -36,14 +36,25 @@
 
       <ul class="nav-links" id="navLinks">
         <li><a href="#home" class="active">Home</a></li>
-        <li><a href="#store" onclick="filterByCategory('all')">Shop All</a></li>
-        <li><a href="#store" onclick="filterByCategory('abayas')">Abayas</a></li>
-        <li><a href="#store" onclick="filterByCategory('hijabs')">Hijabs</a></li>
-        <li><a href="#store" onclick="filterByCategory('jalab')">Jalbab & Jalab</a></li>
-        <li><a href="#store" onclick="filterByCategory('veils-caps')">Veils & Caps</a></li>
-        <li><a href="#store" onclick="filterByCategory('shoes')">Shoes & Bags</a></li>
-        <li><a href="#store" onclick="filterByCategory('jewellery')">Jewellery</a></li>
-        <li><a href="#store" onclick="filterByCategory('perfumes')">Perfumes</a></li>
+
+        <!-- Dropdown for Categories on Desktop -->
+        <li class="nav-dropdown">
+          <a href="#store" class="dropdown-trigger" onclick="filterByCategory('all')">
+            Collections <span class="arrow-down">&#9662;</span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#store" onclick="filterByCategory('all')">All Items</a></li>
+            <li><a href="#store" onclick="filterByCategory('abayas')">Abayas</a></li>
+            <li><a href="#store" onclick="filterByCategory('hijabs')">Hijabs</a></li>
+            <li><a href="#store" onclick="filterByCategory('jalab')">Jalbab & Jalab</a></li>
+            <li><a href="#store" onclick="filterByCategory('veils-caps')">Veils & Caps</a></li>
+            <li><a href="#store" onclick="filterByCategory('shoes')">Shoes & Bags</a></li>
+            <li><a href="#store" onclick="filterByCategory('jewellery')">Jewellery</a></li>
+            <li><a href="#store" onclick="filterByCategory('perfumes')">Perfumes</a></li>
+          </ul>
+        </li>
+
+        <li><a href="#bespoke">Bespoke Tailoring</a></li>
         <li><a href="#about-owner">About</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
