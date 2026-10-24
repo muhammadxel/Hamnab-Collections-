@@ -40,28 +40,7 @@ html {
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-light);
-  /* --- TOP ANNOUNCEMENT BAR --- */
-.top-bar {
-  background: var(--dark-charcoal);
-  color: #f1ebd8;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 6px 10px;
-  border-bottom: 1px solid rgba(197, 160, 89, 0.3);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-@media (max-width: 480px) {
-  .top-bar {
-    font-size: 0.62rem;
-    letter-spacing: 0.02em;
-    padding: 5px 6px;
-  }
-}
+  color: var(--text-primary);
   line-height: 1.6;
 }
 
@@ -91,12 +70,23 @@ button, input, select, textarea {
 .top-bar {
   background: var(--dark-charcoal);
   color: #f1ebd8;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   text-align: center;
-  padding: 8px 16px;
+  padding: 6px 10px;
   border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+  .top-bar {
+    font-size: 0.62rem;
+    letter-spacing: 0.02em;
+    padding: 5px 6px;
+  }
 }
 
 /* --- HEADER & NAVIGATION --- */
@@ -114,12 +104,14 @@ button, input, select, textarea {
   justify-content: space-between;
   align-items: center;
   padding: 14px 0;
+  gap: 20px;
 }
 
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .brand-logo img {
@@ -154,7 +146,7 @@ button, input, select, textarea {
 .nav-links {
   display: flex;
   list-style: none;
-  gap: 20px;
+  gap: 28px;
   align-items: center;
 }
 
@@ -162,14 +154,69 @@ button, input, select, textarea {
   font-size: 0.88rem;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   color: var(--text-primary);
-  padding: 6px 0;
+  padding: 8px 0;
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
+  color: var(--primary-gold-dark);
+}
+
+/* --- DESKTOP DROPDOWN MENU --- */
+.nav-dropdown {
+  position: relative;
+}
+
+.arrow-down {
+  font-size: 0.7rem;
+  transition: transform 0.25s ease;
+}
+
+.nav-dropdown:hover .arrow-down {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #ffffff;
+  min-width: 200px;
+  list-style: none;
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  padding: 8px 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.2s ease-in-out;
+  z-index: 1000;
+}
+
+.nav-dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu li a {
+  padding: 10px 18px;
+  font-size: 0.82rem;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  display: block;
+}
+
+.dropdown-menu li a:hover {
+  background: var(--bg-light);
   color: var(--primary-gold-dark);
 }
 
@@ -217,7 +264,7 @@ button, input, select, textarea {
 /* --- HERO SECTION --- */
 .hero {
   position: relative;
-  background: linear-gradient(rgba(18, 18, 18, 0.72), rgba(18, 18, 18, 0.72)), url('images/placeholder.jpg') center/cover no-repeat;
+  background: linear-gradient(rgba(18, 18, 18, 0.72), rgba(18, 18, 18, 0.72)), url('placeholder.jpg') center/cover no-repeat;
   color: #ffffff;
   padding: 100px 0;
   text-align: center;
@@ -790,7 +837,7 @@ button, input, select, textarea {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 20px;
   text-align: center;
-  font-size: 0.70rem;
+  font-size: 0.75rem;
   color: #888;
   display: flex;
   flex-direction: column;
@@ -798,16 +845,22 @@ button, input, select, textarea {
 }
 
 .powered-by {
-  font-size: 0.70rem;
+  font-size: 0.72rem;
   color: #777777;
   letter-spacing: 0.05em;
-  text-transform: capitalize;
+  text-transform: uppercase;
 }
 
-.powered-by span {
+.powered-by a, .powered-by span {
   color: var(--primary-gold);
   font-weight: 600;
-  text-transform: none;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.powered-by a:hover {
+  color: #ffffff;
+  text-decoration: underline;
 }
 
 /* --- RESPONSIVE BREAKPOINTS --- */
@@ -832,6 +885,16 @@ button, input, select, textarea {
 @media (max-width: 768px) {
   .mobile-toggle {
     display: block;
+  }
+  .nav-dropdown .dropdown-menu {
+    position: static;
+    box-shadow: none;
+    border: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    padding-left: 16px;
+    background: transparent;
   }
   .nav-links {
     display: none;
