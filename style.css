@@ -264,7 +264,7 @@ button, input, select, textarea {
 /* --- HERO SECTION --- */
 .hero {
   position: relative;
-  background: linear-gradient(rgba(18, 18, 18, 0.72), rgba(18, 18, 18, 0.72)), url('placeholder.jpg') center/cover no-repeat;
+  background: linear-gradient(180deg, #1f1f1f 0%, #121212 100%);
   color: #ffffff;
   padding: 100px 0;
   text-align: center;
