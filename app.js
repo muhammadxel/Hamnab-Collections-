@@ -1,9 +1,12 @@
 /**
- * HAMNAB COLLECTIONS - Core Application Logic
- * Manages Rendering, Cart State, LocalStorage Persistence & WhatsApp Link Assembly
+ * HAMNAB COLLECTIONS - Live Google Sheets & Cart Engine
  */
 
+// 1. PASTE YOUR PUBLISHED GOOGLE SHEET CSV LINK INSIDE THE QUOTES BELOW:
+const GOOGLE_SHEET_CSV_URL = "PASTE_YOUR_GOOGLE_SHEET_CSV_LINK_HERE";
+
 // Global State
+let PRODUCTS = [];
 let currentCategory = 'all';
 let cart = JSON.parse(localStorage.getItem('hamnab_cart')) || [];
 const OFFICIAL_WHATSAPP = "2348064474487";
@@ -35,42 +38,111 @@ const whatsappCheckoutForm = document.getElementById('whatsappCheckoutForm');
 const quickContactForm = document.getElementById('quickContactForm');
 
 // Initialize Website
-document.addEventListener('DOMContentLoaded', () => {
-  renderProducts();
+document.addEventListener('DOMContentLoaded', async () => {
   updateCartUI();
   setupEventListeners();
+  await loadProductsFromSheet();
 });
+
+// Fetch & Parse Google Sheet CSV
+async function loadProductsFromSheet() {
+  productGrid.innerHTML = `
+    <div class="empty-state" style="grid-column: 1 / -1;">
+      <p>Loading HAMNAB COLLECTIONS catalog...</p>
+    </div>
+  `;
+
+  try {
+    // Cache-busting timestamp ensures fresh edits appear quickly
+    const cacheBuster = `${GOOGLE_SHEET_CSV_URL}&t=${Date.now()}`;
+    const response = await fetch(cacheBuster);
+    if (!response.ok) throw new Error("Failed to fetch Google Sheet");
+    
+    const csvText = await response.text();
+    PRODUCTS = parseCSVToProducts(csvText);
+    renderProducts();
+  } catch (error) {
+    console.error("Catalog load error:", error);
+    productGrid.innerHTML = `
+      <div class="empty-state" style="grid-column: 1 / -1;">
+        <p style="color: #b00020;">Unable to load live catalog. Please check your internet connection or refresh the page.</p>
+      </div>
+    `;
+  }
+}
+
+// Robust CSV Parser (handles commas inside quoted descriptions)
+function parseCSVToProducts(csvText) {
+  const rows = [];
+  let currentRow = [];
+  let currentField = '';
+  let insideQuotes = false;
+
+  for (let i = 0; i < csvText.length; i++) {
+    const char = csvText[i];
+    const nextChar = csvText[i + 1];
+
+    if (char === '"') {
+      if (insideQuotes && nextChar === '"') {
+        currentField += '"';
+        i++;
+      } else {
+        insideQuotes = !insideQuotes;
+      }
+    } else if (char === ',' && !insideQuotes) {
+      currentRow.push(currentField.trim());
+      currentField = '';
+    } else if ((char === '\r' || char === '\n') && !insideQuotes) {
+      if (char === '\r' && nextChar === '\n') i++;
+      currentRow.push(currentField.trim());
+      if (currentRow.some(cell => cell !== '')) rows.push(currentRow);
+      currentRow = [];
+      currentField = '';
+    } else {
+      currentField += char;
+    }
+  }
+  if (currentField || currentRow.length > 0) {
+    currentRow.push(currentField.trim());
+    if (currentRow.some(cell => cell !== '')) rows.push(currentRow);
+  }
+
+  // Convert rows (skipping Row 1 headers) into Product objects
+  return rows.slice(1).map((cols, index) => {
+    const rawPrice = (cols[3] || "0").replace(/[^0-9.]/g, '');
+    return {
+      id: cols[0] || `item-${index + 1}`,
+      name: cols[1] || "Unnamed Item",
+      category: (cols[2] || "all").toLowerCase().trim(),
+      price: Number(rawPrice) || 0,
+      image: cols[4] || "placeholder.jpg",
+      description: cols[5] || "",
+      sizes: cols[6] ? cols[6].split(',').map(s => s.trim()).filter(Boolean) : ["Standard"],
+      colors: cols[7] ? cols[7].split(',').map(c => c.trim()).filter(Boolean) : ["Default"],
+      isCustomOrder: (cols[8] || "").toUpperCase() === "TRUE"
+    };
+  });
+}
 
 // Setup Event Listeners
 function setupEventListeners() {
-  // Mobile Nav Toggle
   mobileMenuToggle.addEventListener('click', () => {
     navLinks.classList.toggle('active');
   });
 
-  // Close nav on click
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => navLinks.classList.remove('active'));
   });
 
-  // Cart Drawer open/close
   openCartBtn.addEventListener('click', openCart);
   closeCartBtn.addEventListener('click', closeCart);
   cartOverlay.addEventListener('click', (e) => {
     if (e.target === cartOverlay) closeCart();
   });
 
-  // Search input
-  searchInput.addEventListener('input', () => {
-    renderProducts();
-  });
+  searchInput.addEventListener('input', renderProducts);
+  sortSelect.addEventListener('change', renderProducts);
 
-  // Sort select
-  sortSelect.addEventListener('change', () => {
-    renderProducts();
-  });
-
-  // Category chips
   categoryChips.forEach(chip => {
     chip.addEventListener('click', () => {
       categoryChips.forEach(c => c.classList.remove('active'));
@@ -80,10 +152,8 @@ function setupEventListeners() {
     });
   });
 
-  // WhatsApp Checkout Form Submission
   whatsappCheckoutForm.addEventListener('submit', handleWhatsAppCheckout);
 
-  // Quick Contact Form Submission
   if (quickContactForm) {
     quickContactForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -102,29 +172,21 @@ function setupEventListeners() {
   }
 }
 
-// Category filter function triggered from navigation
 window.filterByCategory = function(category) {
   currentCategory = category;
   categoryChips.forEach(chip => {
-    if (chip.getAttribute('data-cat') === category) {
-      chip.classList.add('active');
-    } else {
-      chip.classList.remove('active');
-    }
+    chip.classList.toggle('active', chip.getAttribute('data-cat') === category);
   });
   renderProducts();
 };
 
-// Render Products Grid
 function renderProducts() {
   let filtered = [...PRODUCTS];
 
-  // 1. Filter by Category
   if (currentCategory !== 'all') {
     filtered = filtered.filter(p => p.category === currentCategory);
   }
 
-  // 2. Filter by Search Query
   const query = searchInput.value.toLowerCase().trim();
   if (query) {
     filtered = filtered.filter(p => 
@@ -134,7 +196,6 @@ function renderProducts() {
     );
   }
 
-  // 3. Sort Results
   const sortMode = sortSelect.value;
   if (sortMode === 'low-to-high') {
     filtered.sort((a, b) => a.price - b.price);
@@ -144,7 +205,6 @@ function renderProducts() {
     filtered.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  // Handle Empty State
   if (filtered.length === 0) {
     productGrid.innerHTML = `
       <div class="empty-state" style="grid-column: 1 / -1;">
@@ -155,7 +215,6 @@ function renderProducts() {
     return;
   }
 
-  // Generate Card HTML
   productGrid.innerHTML = filtered.map(item => {
     const sizeOptions = item.sizes.map(s => `<option value="${s}">Size: ${s}</option>`).join('');
     const colorOptions = item.colors.map(c => `<option value="${c}">Color: ${c}</option>`).join('');
@@ -163,7 +222,7 @@ function renderProducts() {
     return `
       <article class="product-card" id="card-${item.id}">
         <div class="product-thumb">
-          <img src="${item.image}" alt="${item.name}" loading="lazy">
+          <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.src='placeholder.jpg'">
           ${item.isCustomOrder ? '<span class="product-tag">Bespoke Option</span>' : ''}
         </div>
         <div class="product-info">
@@ -189,14 +248,12 @@ function renderProducts() {
   }).join('');
 }
 
-// Reset Search and Filters
 window.resetFilters = function() {
   searchInput.value = '';
   sortSelect.value = 'default';
   filterByCategory('all');
 };
 
-// Add to Shopping Bag
 window.addToCart = function(productId) {
   const product = PRODUCTS.find(p => p.id === productId);
   if (!product) return;
@@ -229,7 +286,6 @@ window.addToCart = function(productId) {
   openCart();
 };
 
-// Instant Direct WhatsApp Order for a Single Product
 window.directWhatsAppOrder = function(productId) {
   const product = PRODUCTS.find(p => p.id === productId);
   if (!product) return;
@@ -256,12 +312,10 @@ window.directWhatsAppOrder = function(productId) {
   window.open(waURL, '_blank');
 };
 
-// Save Cart to LocalStorage
 function saveCart() {
   localStorage.setItem('hamnab_cart', JSON.stringify(cart));
 }
 
-// Update Cart Visuals
 function updateCartUI() {
   const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
   cartCount.textContent = totalItems;
@@ -285,7 +339,7 @@ function updateCartUI() {
 
     return `
       <div class="cart-item">
-        <img src="${item.image}" alt="${item.name}" class="cart-item-thumb">
+        <img src="${item.image}" alt="${item.name}" class="cart-item-thumb" onerror="this.src='placeholder.jpg'">
         <div class="cart-item-details">
           <div class="cart-item-title">${item.name}</div>
           <div class="cart-item-meta">Size: ${item.size} | Color: ${item.color}</div>
@@ -304,7 +358,6 @@ function updateCartUI() {
   cartTotalDisplay.textContent = formatNaira(subtotal);
 }
 
-// Adjust Quantity
 window.changeQty = function(cartItemId, delta) {
   const item = cart.find(i => i.cartItemId === cartItemId);
   if (!item) return;
@@ -318,14 +371,12 @@ window.changeQty = function(cartItemId, delta) {
   updateCartUI();
 };
 
-// Remove single product from cart
 window.removeFromCart = function(cartItemId) {
   cart = cart.filter(i => i.cartItemId !== cartItemId);
   saveCart();
   updateCartUI();
 };
 
-// Cart Drawer open/close functions
 function openCart() {
   cartOverlay.classList.add('open');
 }
@@ -334,7 +385,6 @@ function closeCart() {
   cartOverlay.classList.remove('open');
 }
 
-// Generate WhatsApp Checkout Message with Photo Links
 function handleWhatsAppCheckout(e) {
   e.preventDefault();
 
@@ -348,7 +398,6 @@ function handleWhatsAppCheckout(e) {
   const address = document.getElementById('custAddress').value.trim();
   const notes = document.getElementById('custNotes').value.trim();
 
-  // Get current website base URL (e.g., https://hamnab-collections.vercel.app/)
   const siteBaseUrl = window.location.origin;
 
   let totalSum = 0;
@@ -358,7 +407,6 @@ function handleWhatsAppCheckout(e) {
     const itemTotal = item.price * item.qty;
     totalSum += itemTotal;
     
-    // Construct direct photo link
     const itemPhotoUrl = item.image.startsWith('http') 
       ? item.image 
       : `${siteBaseUrl}/${item.image.replace(/^\//, '')}`;
@@ -386,12 +434,10 @@ _Please review the order and photos, confirm availability, and provide payment d
 
   const encodedUrl = `https://wa.me/${OFFICIAL_WHATSAPP}?text=${encodeURIComponent(messageText)}`;
   
-  // Clear cart and close drawer
   cart = [];
   saveCart();
   updateCartUI();
   closeCart();
 
-  // Open WhatsApp
   window.open(encodedUrl, '_blank');
 }
