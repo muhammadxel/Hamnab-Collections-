@@ -53,7 +53,80 @@
             <li><a href="#store" onclick="filterByCategory('perfumes')">Perfumes</a></li>
           </ul>
         </li>
+      
+        <li><a href="#dressing-room">Dressing Room</a></li>
+        <!-- Interactive Dressing Room Studio -->
+  <section class="section-padding dressing-room-section" id="dressing-room">
+    <div class="container">
+      <div class="section-header">
+        <p class="hero-subtitle" style="margin-bottom: 6px;">Virtual Boutique Experience</p>
+        <h2>The HAMNAB Dressing Room</h2>
+        <p>Preview our pieces on our Founder's base look, rotate the studio view, and build your complete outfit</p>
+      </div>
 
+      <div class="dressing-room-grid">
+        <!-- Left: Luxury Fitting Mirror & 360° Motion Stage -->
+        <div class="fitting-mirror-card">
+          <div class="mirror-backdrop">
+            <div class="mirror-spotlight"></div>
+            
+            <!-- Rotatable Stage -->
+            <div class="model-stage" id="modelStage">
+              <img id="dressingRoomMainImg" src="ceo-base.jpg" alt="CEO Base Look in Milk Inner Dress" onerror="this.src='founder.jpeg'">
+              <video id="dressingRoomVideo" loop muted playsinline style="display: none;"></video>
+            </div>
+
+            <!-- Selected Outfit Overlay Tag -->
+            <div class="outfit-status-pill" id="outfitStatusPill">
+              Base Look: Classic Milk Inner Dress
+            </div>
+          </div>
+
+          <!-- Rotation & Reset Controls -->
+          <div class="mirror-controls">
+            <button type="button" class="studio-btn" id="rotateLeftBtn" title="Rotate Left">&#8634; Turn Left</button>
+            <button type="button" class="studio-btn" id="autoSpinBtn" title="Toggle Continuous 360 Motion">&#9654; Auto Motion</button>
+            <button type="button" class="studio-btn" id="rotateRightBtn" title="Rotate Right">Turn Right &#8635;</button>
+            <button type="button" class="studio-btn reset-btn" id="resetLookBtn">Reset Base Look</button>
+          </div>
+
+          <!-- Active Selected Item Action Bar -->
+          <div class="selected-look-bar" id="selectedLookBar" style="display: none;">
+            <div>
+              <strong id="tryOnItemName">Selected Outfit</strong>
+              <span id="tryOnItemPrice" style="display:block; color: var(--primary-gold-dark); font-weight:700;">₦0</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-primary" id="tryOnAddToBagBtn" style="padding: 8px 14px; font-size: 0.78rem;">Add to Bag</button>
+              <button type="button" class="btn btn-whatsapp" id="tryOnWaBtn" style="padding: 8px 14px; font-size: 0.78rem;">Order Look</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Live Catalog Wardrobe Rack -->
+        <div class="wardrobe-rack-card">
+          <div class="rack-header">
+            <h3>Select an Item to Try On</h3>
+            <select id="rackCategoryFilter" class="sort-select" style="padding: 6px 10px; font-size: 0.82rem;">
+              <option value="all">All Wardrobe Items</option>
+              <option value="abayas">Abayas</option>
+              <option value="hijabs">Hijabs</option>
+              <option value="jalab">Jalbab & Jalab</option>
+              <option value="veils-caps">Veils & Caps</option>
+              <option value="shoes">Shoes & Bags</option>
+              <option value="jewellery">Jewellery</option>
+              <option value="perfumes">Perfumes</option>
+            </select>
+          </div>
+
+          <div class="wardrobe-list" id="wardrobeList">
+            <!-- Populated automatically from Google Sheet -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+        
         <li><a href="#bespoke">Bespoke Tailoring</a></li>
         <li><a href="#about-owner">About</a></li>
         <li><a href="#contact">Contact</a></li>
