@@ -52,10 +52,19 @@
           </ul>
         </li>
 
-        <li><a href="#dressing-room">Dressing Room</a></li>
-        <li><a href="#bespoke">Bespoke Tailoring</a></li>
-        <li><a href="#about-owner">About</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#home" class="active" onclick="showStoreView()">Home</a></li>
+
+        <li class="nav-dropdown">
+          <a href="#store" class="dropdown-trigger" onclick="showStoreView(); filterByCategory('all')">
+            Collections <span class="arrow-down">&#9662;</span>
+          </a>
+          ...
+        </li>
+
+        <li><a href="#dressing-room" onclick="showDressingRoomView(event)">Dressing Room</a></li>
+        <li><a href="#bespoke" onclick="showStoreView()">Bespoke Tailoring</a></li>
+        <li><a href="#about-owner" onclick="showStoreView()">About</a></li>
+        <li><a href="#contact" onclick="showStoreView()">Contact</a></li>
       </ul>
 
       <div class="nav-actions">
@@ -118,9 +127,15 @@
     </div>
   </section>
 
-  <!-- Interactive Dressing Room Studio -->
-  <section class="section-padding dressing-room-section" id="dressing-room">
+<!-- Interactive Dressing Room Studio (Dedicated View - Hidden by Default) -->
+  <section class="section-padding dressing-room-section" id="dressing-room" style="display: none; min-height: 85vh;">
     <div class="container">
+      <div style="margin-bottom: 20px;">
+        <button type="button" class="studio-btn" onclick="showStoreView()" style="padding: 8px 16px;">
+          &larr; Back to Main Store
+        </button>
+      </div>
+
       <div class="section-header">
         <p class="hero-subtitle" style="margin-bottom: 6px;">Virtual Boutique Experience</p>
         <h2>The HAMNAB Dressing Room</h2>
@@ -135,13 +150,13 @@
             
             <!-- Rotatable Stage -->
             <div class="model-stage" id="modelStage">
-              <img id="dressingRoomMainImg" src="ceo-base.jpg" alt="CEO Base Look in Milk Inner Dress" onerror="this.src='founder.jpeg'">
+              <img id="dressingRoomMainImg" src="ceo-base.png" alt="CEO Base Look in White Inner Dress" onerror="this.src='founder.jpeg'">
               <video id="dressingRoomVideo" loop muted playsinline style="display: none;"></video>
             </div>
 
             <!-- Selected Outfit Overlay Tag -->
             <div class="outfit-status-pill" id="outfitStatusPill">
-              Base Look: Classic Milk Inner Dress
+              Base Look: Classic White Inner Dress
             </div>
           </div>
 
