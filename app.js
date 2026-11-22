@@ -455,10 +455,14 @@ _Please review the order and photos, confirm availability, and provide payment d
 }
 
 /* ==========================================================================
-   INTERACTIVE DRESSING ROOM ENGINE
+   INTERACTIVE DRESSING ROOM ENGINE (Auto-Motion + Garment Drape Layering)
    ========================================================================== */
 
-const BASE_CEO_IMAGE = "ceo-base.jng"; // Replace with your Cloudinary URL of CEO in white/milk base dress
+const BASE_CEO_IMAGE = "ceo-base.png";
+let stageAngle = 0;
+let autoSpinInterval = null;
+let activeTryOnProduct = null;
+
 // Switch to Dedicated Dressing Room View (Hides Store Sections)
 window.showDressingRoomView = function(e) {
   if (e) e.preventDefault();
@@ -472,11 +476,13 @@ window.showDressingRoomView = function(e) {
   if (dressingRoom) {
     dressingRoom.style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    startAutoSpin();
   }
 };
 
-// Return to Main Store View (Hides Dressing Room)
+// Return to Main Store View
 window.showStoreView = function() {
+  stopAutoSpin();
   const dressingRoom = document.getElementById('dressing-room');
   if (dressingRoom) dressingRoom.style.display = 'none';
 
@@ -487,15 +493,41 @@ window.showStoreView = function() {
   });
 };
 
-let stageAngle = 0;
-let autoSpinInterval = null;
-let activeTryOnProduct = null;
+function startAutoSpin() {
+  const autoSpinBtn = document.getElementById('autoSpinBtn');
+  const modelStage = document.getElementById('modelStage');
+  if (!modelStage || autoSpinInterval) return;
+
+  if (autoSpinBtn) {
+    autoSpinBtn.classList.add('active-spin');
+    autoSpinBtn.innerHTML = '&#9208; Pause Motion';
+  }
+
+  let direction = 1;
+  autoSpinInterval = setInterval(() => {
+    stageAngle += 1.5 * direction;
+    if (stageAngle >= 32 || stageAngle <= -32) direction *= -1;
+    modelStage.style.transform = `rotateY(${stageAngle}deg)`;
+  }, 30);
+}
+
+function stopAutoSpin() {
+  const autoSpinBtn = document.getElementById('autoSpinBtn');
+  if (autoSpinInterval) {
+    clearInterval(autoSpinInterval);
+    autoSpinInterval = null;
+  }
+  if (autoSpinBtn) {
+    autoSpinBtn.classList.remove('active-spin');
+    autoSpinBtn.innerHTML = '&#9654; Auto Motion';
+  }
+}
 
 function initDressingRoom() {
   const wardrobeList = document.getElementById('wardrobeList');
   const rackFilter = document.getElementById('rackCategoryFilter');
   const modelStage = document.getElementById('modelStage');
-  const mirrorBackdrop = document.querySelector('.mirror-backdrop');
+  const mirrorBackdrop = document.getElementById('mirrorBackdrop');
   const rotateLeftBtn = document.getElementById('rotateLeftBtn');
   const rotateRightBtn = document.getElementById('rotateRightBtn');
   const autoSpinBtn = document.getElementById('autoSpinBtn');
@@ -519,90 +551,74 @@ function initDressingRoom() {
         <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.src='placeholder.jpg'">
         <div class="wardrobe-item-title">${item.name}</div>
         <div class="wardrobe-item-price">${formatNaira(item.price)}</div>
-        <button type="button" class="btn btn-primary" style="padding: 5px 8px; font-size: 0.72rem; width: 100%; margin-top: auto;">Try On</button>
+        <button type="button" class="btn btn-primary" style="padding: 6px 8px; font-size: 0.72rem; width: 100%; margin-top: auto;">Put On Model</button>
       </div>
     `).join('');
-  }
-
-  function applyStageRotation() {
-    modelStage.style.transform = `rotateY(${stageAngle}deg)`;
   }
 
   rotateLeftBtn.addEventListener('click', () => {
     stopAutoSpin();
     stageAngle -= 25;
-    applyStageRotation();
+    modelStage.style.transform = `rotateY(${stageAngle}deg)`;
   });
 
   rotateRightBtn.addEventListener('click', () => {
     stopAutoSpin();
     stageAngle += 25;
-    applyStageRotation();
+    modelStage.style.transform = `rotateY(${stageAngle}deg)`;
   });
-
-  function stopAutoSpin() {
-    if (autoSpinInterval) {
-      clearInterval(autoSpinInterval);
-      autoSpinInterval = null;
-      autoSpinBtn.classList.remove('active-spin');
-      autoSpinBtn.innerHTML = '&#9654; Auto Motion';
-    }
-  }
 
   autoSpinBtn.addEventListener('click', () => {
     if (autoSpinInterval) {
       stopAutoSpin();
     } else {
-      autoSpinBtn.classList.add('active-spin');
-      autoSpinBtn.innerHTML = '&#9208; Pause Motion';
-      let direction = 1;
-      autoSpinInterval = setInterval(() => {
-        stageAngle += 2 * direction;
-        if (stageAngle >= 35 || stageAngle <= -35) direction *= -1;
-        applyStageRotation();
-      }, 30);
+      startAutoSpin();
     }
   });
 
-  // Drag / Swipe on Mirror to Rotate
+  // Drag / Swipe on Mirror to Rotate Manually
   let isDragging = false;
   let startX = 0;
 
-  mirrorBackdrop.addEventListener('pointerdown', (e) => {
-    isDragging = true;
-    startX = e.clientX;
-    stopAutoSpin();
-  });
+  if (mirrorBackdrop) {
+    mirrorBackdrop.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      startX = e.clientX;
+      stopAutoSpin();
+    });
 
-  window.addEventListener('pointermove', (e) => {
-    if (!isDragging) return;
-    const deltaX = e.clientX - startX;
-    startX = e.clientX;
-    stageAngle = Math.max(-65, Math.min(65, stageAngle + deltaX * 0.4));
-    applyStageRotation();
-  });
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - startX;
+      startX = e.clientX;
+      stageAngle = Math.max(-70, Math.min(70, stageAngle + deltaX * 0.45));
+      modelStage.style.transform = `rotateY(${stageAngle}deg)`;
+    });
 
-  window.addEventListener('pointerup', () => {
-    isDragging = false;
-  });
+    window.addEventListener('pointerup', () => {
+      isDragging = false;
+    });
+  }
 
   resetLookBtn.addEventListener('click', () => {
-    stopAutoSpin();
     stageAngle = 0;
-    applyStageRotation();
+    modelStage.style.transform = `rotateY(0deg)`;
     activeTryOnProduct = null;
 
     const imgEl = document.getElementById('dressingRoomMainImg');
+    const overlayEl = document.getElementById('garmentOverlayImg');
     const vidEl = document.getElementById('dressingRoomVideo');
     const pill = document.getElementById('outfitStatusPill');
     const actionBar = document.getElementById('selectedLookBar');
 
     vidEl.pause();
     vidEl.style.display = 'none';
+    overlayEl.style.display = 'none';
     imgEl.style.display = 'block';
     imgEl.src = BASE_CEO_IMAGE;
     pill.textContent = "Base Look: Classic White Inner Dress";
     actionBar.style.display = 'none';
+    startAutoSpin();
     renderWardrobeRack();
   });
 
@@ -618,18 +634,18 @@ window.tryOnOutfit = function(productId) {
   if (!product) return;
 
   activeTryOnProduct = product;
-  const mediaSource = product.tryOnImage || product.image;
-  const isVideo = /\.(mp4|webm|mov)(\?.*)?$/i.test(mediaSource);
-
   const imgEl = document.getElementById('dressingRoomMainImg');
+  const overlayEl = document.getElementById('garmentOverlayImg');
   const vidEl = document.getElementById('dressingRoomVideo');
   const pill = document.getElementById('outfitStatusPill');
   const actionBar = document.getElementById('selectedLookBar');
-  const modelStage = document.getElementById('modelStage');
 
-  modelStage.style.opacity = '0.35';
+  // If Google Sheet Column J (tryOnImage) has a custom CEO model photo/video, swap full model
+  if (product.tryOnImage && product.tryOnImage.trim() !== "") {
+    const mediaSource = product.tryOnImage.trim();
+    const isVideo = /\.(mp4|webm|mov)(\?.*)?$/i.test(mediaSource);
+    overlayEl.style.display = 'none';
 
-  setTimeout(() => {
     if (isVideo) {
       imgEl.style.display = 'none';
       vidEl.style.display = 'block';
@@ -641,19 +657,45 @@ window.tryOnOutfit = function(productId) {
       imgEl.style.display = 'block';
       imgEl.src = mediaSource;
     }
+  } else {
+    // Otherwise keep CEO base portrait visible and drape the selected item onto her
+    vidEl.pause();
+    vidEl.style.display = 'none';
+    imgEl.style.display = 'block';
+    imgEl.src = BASE_CEO_IMAGE;
 
-    pill.textContent = `Wearing: ${product.name}`;
-    document.getElementById('tryOnItemName').textContent = product.name;
-    document.getElementById('tryOnItemPrice').textContent = formatNaira(product.price);
-    actionBar.style.display = 'flex';
+    overlayEl.src = product.image;
+    overlayEl.style.display = 'block';
 
-    document.getElementById('tryOnAddToBagBtn').onclick = () => addToCart(product.id);
-    document.getElementById('tryOnWaBtn').onclick = () => directWhatsAppOrder(product.id);
+    // Adjust drape position depending on item category
+    if (product.category === 'hijabs' || product.category === 'veils-caps') {
+      overlayEl.style.bottom = 'auto';
+      overlayEl.style.top = '12%';
+      overlayEl.style.width = '46%';
+      overlayEl.style.maxHeight = '42%';
+    } else if (product.category === 'shoes' || product.category === 'jewellery' || product.category === 'perfumes') {
+      overlayEl.style.top = 'auto';
+      overlayEl.style.bottom = '8%';
+      overlayEl.style.width = '42%';
+      overlayEl.style.maxHeight = '36%';
+    } else {
+      // Abayas & Jalbab drape over torso/body
+      overlayEl.style.top = 'auto';
+      overlayEl.style.bottom = '0';
+      overlayEl.style.width = '68%';
+      overlayEl.style.maxHeight = '66%';
+    }
+  }
 
-    modelStage.style.opacity = '1';
-  }, 180);
+  pill.textContent = `Wearing: ${product.name}`;
+  document.getElementById('tryOnItemName').textContent = product.name;
+  document.getElementById('tryOnItemPrice').textContent = formatNaira(product.price);
+  actionBar.style.display = 'flex';
 
-  // Highlight active card in rack
+  document.getElementById('tryOnAddToBagBtn').onclick = () => addToCart(product.id);
+  document.getElementById('tryOnWaBtn').onclick = () => directWhatsAppOrder(product.id);
+
+  // Highlight selected item card
   document.querySelectorAll('.wardrobe-item').forEach(el => el.classList.remove('selected'));
   const clickedCard = Array.from(document.querySelectorAll('.wardrobe-item')).find(el =>
     el.querySelector('.wardrobe-item-title')?.textContent === product.name
