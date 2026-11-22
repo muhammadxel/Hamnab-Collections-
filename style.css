@@ -914,15 +914,17 @@ button, input, select, textarea {
 }
 
 .model-stage {
+  position: relative;
   height: 92%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+  transition: transform 0.25s ease-out, opacity 0.25s ease;
   transform-style: preserve-3d;
 }
 
-.model-stage img,
+.model-stage img#dressingRoomMainImg,
 .model-stage video {
   max-height: 100%;
   max-width: 100%;
@@ -931,6 +933,23 @@ button, input, select, textarea {
   filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.16));
   user-select: none;
   pointer-events: none;
+}
+
+/* Layered Dress / Accessory Drape on the CEO */
+#garmentOverlayImg {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 68%;
+  max-height: 66%;
+  object-fit: contain;
+  border-radius: 14px 14px 4px 4px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  z-index: 5;
+  pointer-events: none;
+  transition: all 0.3s ease;
 }
 
 .outfit-status-pill {
