@@ -121,7 +121,8 @@ function parseCSVToProducts(csvText) {
         description: cols[5] || "",
         sizes: cols[6] ? cols[6].split(',').map(s => s.trim()).filter(Boolean) : ["Standard"],
         colors: cols[7] ? cols[7].split(',').map(c => c.trim()).filter(Boolean) : ["Default"],
-        isCustomOrder: (cols[8] || "").toUpperCase() === "TRUE"
+        isCustomOrder: (cols[8] || "").toUpperCase() === "TRUE",
+        tryOnImage: cols[9] ? cols[9].trim() : ""
       };
     });
 }
@@ -452,3 +453,182 @@ _Please review the order and photos, confirm availability, and provide payment d
 
   window.open(encodedUrl, '_blank');
 }
+
+/* ==========================================================================
+   INTERACTIVE DRESSING ROOM ENGINE
+   ========================================================================== */
+
+const BASE_CEO_IMAGE = "ceo-base.jpg"; // Replace with your Cloudinary URL of CEO in white/milk base dress
+let stageAngle = 0;
+let autoSpinInterval = null;
+let activeTryOnProduct = null;
+
+function initDressingRoom() {
+  const wardrobeList = document.getElementById('wardrobeList');
+  const rackFilter = document.getElementById('rackCategoryFilter');
+  const modelStage = document.getElementById('modelStage');
+  const mirrorBackdrop = document.querySelector('.mirror-backdrop');
+  const rotateLeftBtn = document.getElementById('rotateLeftBtn');
+  const rotateRightBtn = document.getElementById('rotateRightBtn');
+  const autoSpinBtn = document.getElementById('autoSpinBtn');
+  const resetLookBtn = document.getElementById('resetLookBtn');
+
+  if (!wardrobeList || !modelStage) return;
+
+  function renderWardrobeRack() {
+    const selectedCat = rackFilter ? rackFilter.value : 'all';
+    const items = selectedCat === 'all'
+      ? PRODUCTS
+      : PRODUCTS.filter(p => p.category === selectedCat);
+
+    if (items.length === 0) {
+      wardrobeList.innerHTML = `<p style="grid-column: 1 / -1; text-align:center; color:#666; padding:20px;">No items in this category yet.</p>`;
+      return;
+    }
+
+    wardrobeList.innerHTML = items.map(item => `
+      <div class="wardrobe-item ${activeTryOnProduct && activeTryOnProduct.id === item.id ? 'selected' : ''}" onclick="tryOnOutfit('${item.id}')">
+        <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.src='placeholder.jpg'">
+        <div class="wardrobe-item-title">${item.name}</div>
+        <div class="wardrobe-item-price">${formatNaira(item.price)}</div>
+        <button type="button" class="btn btn-primary" style="padding: 5px 8px; font-size: 0.72rem; width: 100%; margin-top: auto;">Try On</button>
+      </div>
+    `).join('');
+  }
+
+  function applyStageRotation() {
+    modelStage.style.transform = `rotateY(${stageAngle}deg)`;
+  }
+
+  rotateLeftBtn.addEventListener('click', () => {
+    stopAutoSpin();
+    stageAngle -= 25;
+    applyStageRotation();
+  });
+
+  rotateRightBtn.addEventListener('click', () => {
+    stopAutoSpin();
+    stageAngle += 25;
+    applyStageRotation();
+  });
+
+  function stopAutoSpin() {
+    if (autoSpinInterval) {
+      clearInterval(autoSpinInterval);
+      autoSpinInterval = null;
+      autoSpinBtn.classList.remove('active-spin');
+      autoSpinBtn.innerHTML = '&#9654; Auto Motion';
+    }
+  }
+
+  autoSpinBtn.addEventListener('click', () => {
+    if (autoSpinInterval) {
+      stopAutoSpin();
+    } else {
+      autoSpinBtn.classList.add('active-spin');
+      autoSpinBtn.innerHTML = '&#9208; Pause Motion';
+      let direction = 1;
+      autoSpinInterval = setInterval(() => {
+        stageAngle += 2 * direction;
+        if (stageAngle >= 35 || stageAngle <= -35) direction *= -1;
+        applyStageRotation();
+      }, 30);
+    }
+  });
+
+  // Drag / Swipe on Mirror to Rotate
+  let isDragging = false;
+  let startX = 0;
+
+  mirrorBackdrop.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    stopAutoSpin();
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - startX;
+    startX = e.clientX;
+    stageAngle = Math.max(-65, Math.min(65, stageAngle + deltaX * 0.4));
+    applyStageRotation();
+  });
+
+  window.addEventListener('pointerup', () => {
+    isDragging = false;
+  });
+
+  resetLookBtn.addEventListener('click', () => {
+    stopAutoSpin();
+    stageAngle = 0;
+    applyStageRotation();
+    activeTryOnProduct = null;
+
+    const imgEl = document.getElementById('dressingRoomMainImg');
+    const vidEl = document.getElementById('dressingRoomVideo');
+    const pill = document.getElementById('outfitStatusPill');
+    const actionBar = document.getElementById('selectedLookBar');
+
+    vidEl.pause();
+    vidEl.style.display = 'none';
+    imgEl.style.display = 'block';
+    imgEl.src = BASE_CEO_IMAGE;
+    pill.textContent = "Base Look: Classic Milk Inner Dress";
+    actionBar.style.display = 'none';
+    renderWardrobeRack();
+  });
+
+  if (rackFilter) {
+    rackFilter.addEventListener('change', renderWardrobeRack);
+  }
+
+  renderWardrobeRack();
+}
+
+window.tryOnOutfit = function(productId) {
+  const product = PRODUCTS.find(p => p.id === productId);
+  if (!product) return;
+
+  activeTryOnProduct = product;
+  const mediaSource = product.tryOnImage || product.image;
+  const isVideo = /\.(mp4|webm|mov)(\?.*)?$/i.test(mediaSource);
+
+  const imgEl = document.getElementById('dressingRoomMainImg');
+  const vidEl = document.getElementById('dressingRoomVideo');
+  const pill = document.getElementById('outfitStatusPill');
+  const actionBar = document.getElementById('selectedLookBar');
+  const modelStage = document.getElementById('modelStage');
+
+  modelStage.style.opacity = '0.35';
+
+  setTimeout(() => {
+    if (isVideo) {
+      imgEl.style.display = 'none';
+      vidEl.style.display = 'block';
+      vidEl.src = mediaSource;
+      vidEl.play().catch(() => {});
+    } else {
+      vidEl.pause();
+      vidEl.style.display = 'none';
+      imgEl.style.display = 'block';
+      imgEl.src = mediaSource;
+    }
+
+    pill.textContent = `Wearing: ${product.name}`;
+    document.getElementById('tryOnItemName').textContent = product.name;
+    document.getElementById('tryOnItemPrice').textContent = formatNaira(product.price);
+    actionBar.style.display = 'flex';
+
+    document.getElementById('tryOnAddToBagBtn').onclick = () => addToCart(product.id);
+    document.getElementById('tryOnWaBtn').onclick = () => directWhatsAppOrder(product.id);
+
+    modelStage.style.opacity = '1';
+  }, 180);
+
+  // Highlight active card in rack
+  document.querySelectorAll('.wardrobe-item').forEach(el => el.classList.remove('selected'));
+  const clickedCard = Array.from(document.querySelectorAll('.wardrobe-item')).find(el =>
+    el.querySelector('.wardrobe-item-title')?.textContent === product.name
+  );
+  if (clickedCard) clickedCard.classList.add('selected');
+};
