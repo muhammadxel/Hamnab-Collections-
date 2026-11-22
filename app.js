@@ -2,7 +2,6 @@
  * HAMNAB COLLECTIONS - Live Google Sheets & Cart Engine
  */
 
-// 1. PASTE YOUR PUBLISHED GOOGLE SHEET CSV LINK INSIDE THE QUOTES BELOW:
 const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoaI95GuKKZCmtSslcBc98j0mqVBbbLlGBzIp5nN3kiKx_N7hwwAQvpTK0QYSvaw/pub?gid=2048597444&single=true&output=csv";
 
 // Global State
@@ -46,6 +45,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Fetch & Parse Google Sheet CSV
 async function loadProductsFromSheet() {
+  if (!productGrid) return;
+
   productGrid.innerHTML = `
     <div class="empty-state" style="grid-column: 1 / -1;">
       <p>Loading HAMNAB COLLECTIONS catalog...</p>
@@ -53,8 +54,8 @@ async function loadProductsFromSheet() {
   `;
 
   try {
-    // Cache-busting timestamp ensures fresh edits appear quickly
-    const cacheBuster = `${GOOGLE_SHEET_CSV_URL}&t=${Date.now()}`;
+    const separator = GOOGLE_SHEET_CSV_URL.includes('?') ? '&' : '?';
+    const cacheBuster = `${GOOGLE_SHEET_CSV_URL}${separator}t=${Date.now()}`;
     const response = await fetch(cacheBuster);
     if (!response.ok) throw new Error("Failed to fetch Google Sheet");
     
@@ -65,13 +66,13 @@ async function loadProductsFromSheet() {
     console.error("Catalog load error:", error);
     productGrid.innerHTML = `
       <div class="empty-state" style="grid-column: 1 / -1;">
-        <p style="color: #b00020;">Unable to load live catalog. Please check your internet connection or refresh the page.</p>
+        <p style="color: #b00020;">Unable to load live catalog. Please check your Google Sheet publish settings or refresh the page.</p>
       </div>
     `;
   }
 }
 
-// Robust CSV Parser (handles commas inside quoted descriptions)
+// Robust CSV Parser
 function parseCSVToProducts(csvText) {
   const rows = [];
   let currentRow = [];
@@ -107,41 +108,46 @@ function parseCSVToProducts(csvText) {
     if (currentRow.some(cell => cell !== '')) rows.push(currentRow);
   }
 
-  // Convert rows (skipping Row 1 headers) into Product objects
-  return rows.slice(1).map((cols, index) => {
-    const rawPrice = (cols[3] || "0").replace(/[^0-9.]/g, '');
-    return {
-      id: cols[0] || `item-${index + 1}`,
-      name: cols[1] || "Unnamed Item",
-      category: (cols[2] || "all").toLowerCase().trim(),
-      price: Number(rawPrice) || 0,
-      image: cols[4] || "placeholder.jpg",
-      description: cols[5] || "",
-      sizes: cols[6] ? cols[6].split(',').map(s => s.trim()).filter(Boolean) : ["Standard"],
-      colors: cols[7] ? cols[7].split(',').map(c => c.trim()).filter(Boolean) : ["Default"],
-      isCustomOrder: (cols[8] || "").toUpperCase() === "TRUE"
-    };
-  });
+  return rows.slice(1)
+    .filter(cols => cols[1] && cols[1].trim() !== '')
+    .map((cols, index) => {
+      const rawPrice = (cols[3] || "0").replace(/[^0-9.]/g, '');
+      return {
+        id: cols[0] || `item-${index + 1}`,
+        name: cols[1] || "Unnamed Item",
+        category: (cols[2] || "all").toLowerCase().trim(),
+        price: Number(rawPrice) || 0,
+        image: cols[4] || "placeholder.jpg",
+        description: cols[5] || "",
+        sizes: cols[6] ? cols[6].split(',').map(s => s.trim()).filter(Boolean) : ["Standard"],
+        colors: cols[7] ? cols[7].split(',').map(c => c.trim()).filter(Boolean) : ["Default"],
+        isCustomOrder: (cols[8] || "").toUpperCase() === "TRUE"
+      };
+    });
 }
 
 // Setup Event Listeners
 function setupEventListeners() {
-  mobileMenuToggle.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-  });
+  if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+  }
 
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => navLinks.classList.remove('active'));
   });
 
-  openCartBtn.addEventListener('click', openCart);
-  closeCartBtn.addEventListener('click', closeCart);
-  cartOverlay.addEventListener('click', (e) => {
-    if (e.target === cartOverlay) closeCart();
-  });
+  if (openCartBtn) openCartBtn.addEventListener('click', openCart);
+  if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
+  if (cartOverlay) {
+    cartOverlay.addEventListener('click', (e) => {
+      if (e.target === cartOverlay) closeCart();
+    });
+  }
 
-  searchInput.addEventListener('input', renderProducts);
-  sortSelect.addEventListener('change', renderProducts);
+  if (searchInput) searchInput.addEventListener('input', renderProducts);
+  if (sortSelect) sortSelect.addEventListener('change', renderProducts);
 
   categoryChips.forEach(chip => {
     chip.addEventListener('click', () => {
@@ -152,7 +158,9 @@ function setupEventListeners() {
     });
   });
 
-  whatsappCheckoutForm.addEventListener('submit', handleWhatsAppCheckout);
+  if (whatsappCheckoutForm) {
+    whatsappCheckoutForm.addEventListener('submit', handleWhatsAppCheckout);
+  }
 
   if (quickContactForm) {
     quickContactForm.addEventListener('submit', (e) => {
@@ -181,13 +189,14 @@ window.filterByCategory = function(category) {
 };
 
 function renderProducts() {
+  if (!productGrid) return;
   let filtered = [...PRODUCTS];
 
   if (currentCategory !== 'all') {
     filtered = filtered.filter(p => p.category === currentCategory);
   }
 
-  const query = searchInput.value.toLowerCase().trim();
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
   if (query) {
     filtered = filtered.filter(p => 
       p.name.toLowerCase().includes(query) || 
@@ -196,7 +205,7 @@ function renderProducts() {
     );
   }
 
-  const sortMode = sortSelect.value;
+  const sortMode = sortSelect ? sortSelect.value : 'default';
   if (sortMode === 'low-to-high') {
     filtered.sort((a, b) => a.price - b.price);
   } else if (sortMode === 'high-to-low') {
@@ -249,8 +258,8 @@ function renderProducts() {
 }
 
 window.resetFilters = function() {
-  searchInput.value = '';
-  sortSelect.value = 'default';
+  if (searchInput) searchInput.value = '';
+  if (sortSelect) sortSelect.value = 'default';
   filterByCategory('all');
 };
 
@@ -318,8 +327,10 @@ function saveCart() {
 
 function updateCartUI() {
   const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
-  cartCount.textContent = totalItems;
-  cartDrawerCount.textContent = totalItems;
+  if (cartCount) cartCount.textContent = totalItems;
+  if (cartDrawerCount) cartDrawerCount.textContent = totalItems;
+
+  if (!cartItemsList) return;
 
   if (cart.length === 0) {
     cartItemsList.innerHTML = `
@@ -328,7 +339,7 @@ function updateCartUI() {
         <button class="btn btn-primary" onclick="closeCart()" style="margin-top: 10px;">Start Shopping</button>
       </div>
     `;
-    cartTotalDisplay.textContent = formatNaira(0);
+    if (cartTotalDisplay) cartTotalDisplay.textContent = formatNaira(0);
     return;
   }
 
@@ -355,7 +366,7 @@ function updateCartUI() {
     `;
   }).join('');
 
-  cartTotalDisplay.textContent = formatNaira(subtotal);
+  if (cartTotalDisplay) cartTotalDisplay.textContent = formatNaira(subtotal);
 }
 
 window.changeQty = function(cartItemId, delta) {
@@ -378,11 +389,11 @@ window.removeFromCart = function(cartItemId) {
 };
 
 function openCart() {
-  cartOverlay.classList.add('open');
+  if (cartOverlay) cartOverlay.classList.add('open');
 }
 
 function closeCart() {
-  cartOverlay.classList.remove('open');
+  if (cartOverlay) cartOverlay.classList.remove('open');
 }
 
 function handleWhatsAppCheckout(e) {
