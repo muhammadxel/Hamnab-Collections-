@@ -3,7 +3,7 @@
  */
 
 // 1. PASTE YOUR PUBLISHED GOOGLE SHEET CSV LINK INSIDE THE QUOTES BELOW:
-const GOOGLE_SHEET_CSV_URL = "PASTE_YOUR_GOOGLE_SHEET_CSV_LINK_HERE";
+const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoaI95GuKKZCmtSslcBc98j0mqVBbbLlGBzIp5nN3kiKx_N7hwwAQvpTK0QYSvaw/pub?gid=2048597444&single=true&output=csv";
 
 // Global State
 let PRODUCTS = [];
