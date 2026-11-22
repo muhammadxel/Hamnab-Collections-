@@ -6,11 +6,9 @@
   <title>HAMNAB COLLECTIONS | Modest Fashion, Abayas, Hijabs & Bespoke Tailoring</title>
   <meta name="description" content="Discover premium modest women's wear at HAMNAB COLLECTIONS: bespoke Abayas, Hijabs, Jalab, Veils, Shoes, Jewellery, and Perfumes in Kaduna, Nigeria.">
   <link rel="icon" type="image/jpeg" href="logo.jpg">
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
-  <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,7 +21,7 @@
   <!-- Header & Navigation -->
   <header class="header">
     <div class="container nav-container">
-      <a href="#home" class="brand-logo">
+      <a href="#home" class="brand-logo" onclick="showStoreView()">
         <img src="logo.jpg" alt="HAMNAB COLLECTIONS Logo">
         <div class="brand-text">
           <span class="brand-title">HAMNAB</span>
@@ -34,31 +32,22 @@
       <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu">☰</button>
 
       <ul class="nav-links" id="navLinks">
-        <li><a href="#home" class="active">Home</a></li>
-
-        <li class="nav-dropdown">
-          <a href="#store" class="dropdown-trigger" onclick="filterByCategory('all')">
-            Collections <span class="arrow-down">&#9662;</span>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a href="#store" onclick="filterByCategory('all')">All Items</a></li>
-            <li><a href="#store" onclick="filterByCategory('abayas')">Abayas</a></li>
-            <li><a href="#store" onclick="filterByCategory('hijabs')">Hijabs</a></li>
-            <li><a href="#store" onclick="filterByCategory('jalab')">Jalbab &amp; Jalab</a></li>
-            <li><a href="#store" onclick="filterByCategory('veils-caps')">Veils &amp; Caps</a></li>
-            <li><a href="#store" onclick="filterByCategory('shoes')">Shoes &amp; Bags</a></li>
-            <li><a href="#store" onclick="filterByCategory('jewellery')">Jewellery</a></li>
-            <li><a href="#store" onclick="filterByCategory('perfumes')">Perfumes</a></li>
-          </ul>
-        </li>
-
         <li><a href="#home" class="active" onclick="showStoreView()">Home</a></li>
 
         <li class="nav-dropdown">
           <a href="#store" class="dropdown-trigger" onclick="showStoreView(); filterByCategory('all')">
             Collections <span class="arrow-down">&#9662;</span>
           </a>
-          ...
+          <ul class="dropdown-menu">
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('all')">All Items</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('abayas')">Abayas</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('hijabs')">Hijabs</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('jalab')">Jalbab &amp; Jalab</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('veils-caps')">Veils &amp; Caps</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('shoes')">Shoes &amp; Bags</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('jewellery')">Jewellery</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('perfumes')">Perfumes</a></li>
+          </ul>
         </li>
 
         <li><a href="#dressing-room" onclick="showDressingRoomView(event)">Dressing Room</a></li>
@@ -97,7 +86,6 @@
         <p>Curated garments, custom tailoring, and premium accessories</p>
       </div>
 
-      <!-- Quick Category Selectors -->
       <div class="category-tiles" id="categoryChips">
         <div class="category-chip active" data-cat="all">All Items</div>
         <div class="category-chip" data-cat="abayas">Abayas</div>
@@ -109,7 +97,6 @@
         <div class="category-chip" data-cat="perfumes">Perfumes</div>
       </div>
 
-      <!-- Search and Sort Filter Controls -->
       <div class="store-controls" style="margin-top: 24px;">
         <input type="text" id="searchInput" class="search-input" placeholder="Search by product name or keyword...">
         <select id="sortSelect" class="sort-select">
@@ -120,14 +107,11 @@
         </select>
       </div>
 
-      <!-- Product Grid -->
-      <div class="product-grid" id="productGrid">
-        <!-- Rendered dynamically by app.js -->
-      </div>
+      <div class="product-grid" id="productGrid"></div>
     </div>
   </section>
 
-<!-- Interactive Dressing Room Studio (Dedicated View - Hidden by Default) -->
+  <!-- Interactive Dressing Room Studio (Dedicated View - Hidden until clicked) -->
   <section class="section-padding dressing-room-section" id="dressing-room" style="display: none; min-height: 85vh;">
     <div class="container">
       <div style="margin-bottom: 20px;">
@@ -139,32 +123,33 @@
       <div class="section-header">
         <p class="hero-subtitle" style="margin-bottom: 6px;">Virtual Boutique Experience</p>
         <h2>The HAMNAB Dressing Room</h2>
-        <p>Preview our pieces on our Founder's base look, rotate the studio view, and build your complete outfit</p>
+        <p>Select any piece from our catalog to drape onto our Founder's base look and rotate the studio stage</p>
       </div>
 
       <div class="dressing-room-grid">
         <!-- Left: Luxury Fitting Mirror & 360° Motion Stage -->
         <div class="fitting-mirror-card">
-          <div class="mirror-backdrop">
+          <div class="mirror-backdrop" id="mirrorBackdrop">
             <div class="mirror-spotlight"></div>
             
             <!-- Rotatable Stage -->
             <div class="model-stage" id="modelStage">
-              <img id="dressingRoomMainImg" src="ceo-base.png" alt="CEO Base Look in White Inner Dress" onerror="this.src='founder.jpeg'">
+              <img id="dressingRoomMainImg" src="ceo-base.png" alt="CEO Base Look" onerror="this.src='founder.jpeg'">
+              <!-- Garment Drape Overlay Layer -->
+              <img id="garmentOverlayImg" src="" alt="Selected Garment Overlay" style="display: none;">
               <video id="dressingRoomVideo" loop muted playsinline style="display: none;"></video>
             </div>
 
-            <!-- Selected Outfit Overlay Tag -->
             <div class="outfit-status-pill" id="outfitStatusPill">
               Base Look: Classic White Inner Dress
             </div>
           </div>
 
-          <!-- Rotation & Reset Controls -->
+          <!-- Rotation & Motion Controls -->
           <div class="mirror-controls">
-            <button type="button" class="studio-btn" id="rotateLeftBtn" title="Rotate Left">&#8634; Turn Left</button>
-            <button type="button" class="studio-btn" id="autoSpinBtn" title="Toggle Continuous 360 Motion">&#9654; Auto Motion</button>
-            <button type="button" class="studio-btn" id="rotateRightBtn" title="Rotate Right">Turn Right &#8635;</button>
+            <button type="button" class="studio-btn" id="rotateLeftBtn">&#8634; Turn Left</button>
+            <button type="button" class="studio-btn active-spin" id="autoSpinBtn">&#9208; Pause Motion</button>
+            <button type="button" class="studio-btn" id="rotateRightBtn">Turn Right &#8635;</button>
             <button type="button" class="studio-btn reset-btn" id="resetLookBtn">Reset Base Look</button>
           </div>
 
@@ -197,9 +182,7 @@
             </select>
           </div>
 
-          <div class="wardrobe-list" id="wardrobeList">
-            <!-- Populated automatically from Google Sheet -->
-          </div>
+          <div class="wardrobe-list" id="wardrobeList"></div>
         </div>
       </div>
     </div>
@@ -249,44 +232,35 @@
       </div>
 
       <div class="contact-grid">
-        <!-- Physical Location & CAC Details -->
         <div class="contact-card">
           <h3 style="font-family: var(--font-serif); margin-bottom: 18px;">Registered Atelier</h3>
-          
           <div class="contact-item">
             <div>
               <strong>Physical Location</strong>
               <p>Yangora Plaza, Zaria Road by Abeokuta Street,<br>Kaduna, Kaduna State, Nigeria (Postal: 800211)</p>
             </div>
           </div>
-
           <div class="contact-item">
             <div>
               <strong>Official Email</strong>
               <p><a href="mailto:hamnabcollection87@gmail.com">hamnabcollection87@gmail.com</a></p>
             </div>
           </div>
-
           <div class="contact-item">
             <div>
               <strong>Direct WhatsApp &amp; Call Line</strong>
               <p><a href="tel:+2348064474487">+234 806 447 4487</a></p>
             </div>
           </div>
-
           <div class="contact-item">
             <div>
               <strong>Opening Hours</strong>
               <p>Monday – Saturday: 9:00 AM – 6:30 PM<br>Sunday: Closed (WhatsApp orders accepted 24/7)</p>
             </div>
           </div>
-
-          <div class="cac-badge">
-            ✓ Verified Business Name: CAC BN 8586499
-          </div>
+          <div class="cac-badge">✓ Verified Business Name: CAC BN 8586499</div>
         </div>
 
-        <!-- Direct Instant Message Form -->
         <div class="contact-card">
           <h3 style="font-family: var(--font-serif); margin-bottom: 18px;">Send a Direct WhatsApp Message</h3>
           <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
@@ -309,36 +283,26 @@
     </div>
   </section>
 
-  <!-- Shopping Cart Drawer / Modal -->
+  <!-- Shopping Cart Drawer -->
   <div class="cart-overlay" id="cartOverlay">
     <div class="cart-drawer">
       <div class="cart-header">
         <h3>Shopping Bag (<span id="cartDrawerCount">0</span>)</h3>
         <button class="cart-close-btn" id="closeCartBtn" aria-label="Close cart">&times;</button>
       </div>
-
-      <div class="cart-items" id="cartItemsList">
-        <!-- Cart Items loaded via app.js -->
-      </div>
-
+      <div class="cart-items" id="cartItemsList"></div>
       <div class="cart-footer">
         <div class="cart-total-row">
           <span>Subtotal:</span>
           <span id="cartTotalDisplay">₦0</span>
         </div>
-
-        <!-- Customer Checkout Info Form -->
         <form id="whatsappCheckoutForm" class="checkout-form">
           <input type="text" id="custName" placeholder="Your Full Name *" required>
           <input type="tel" id="custPhone" placeholder="Phone Number (Call / WhatsApp) *" required>
           <input type="text" id="custAddress" placeholder="Delivery State / City / Street Address *" required>
           <textarea id="custNotes" rows="2" placeholder="Custom sizing notes, height in inches, or preferred colors"></textarea>
-          
-          <button type="submit" class="btn btn-whatsapp" style="width: 100%;">
-            Send Order via WhatsApp
-          </button>
+          <button type="submit" class="btn btn-whatsapp" style="width: 100%;">Send Order via WhatsApp</button>
         </form>
-
         <p style="font-size: 0.72rem; color: #888; text-align: center; margin-top: 8px;">
           Note: Clicking opens WhatsApp with your pre-filled bill. Orders are confirmed and prepared once received by our team.
         </p>
@@ -361,23 +325,23 @@
         <div class="footer-col">
           <h4>Categories</h4>
           <ul class="footer-links">
-            <li><a href="#store" onclick="filterByCategory('abayas')">Abayas</a></li>
-            <li><a href="#store" onclick="filterByCategory('hijabs')">Hijabs</a></li>
-            <li><a href="#store" onclick="filterByCategory('jalab')">Jalbab &amp; Jalab</a></li>
-            <li><a href="#store" onclick="filterByCategory('veils-caps')">Veils &amp; Caps</a></li>
-            <li><a href="#store" onclick="filterByCategory('shoes')">Shoes &amp; Bags</a></li>
-            <li><a href="#store" onclick="filterByCategory('jewellery')">Jewellery</a></li>
-            <li><a href="#store" onclick="filterByCategory('perfumes')">Perfumes</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('abayas')">Abayas</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('hijabs')">Hijabs</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('jalab')">Jalbab &amp; Jalab</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('veils-caps')">Veils &amp; Caps</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('shoes')">Shoes &amp; Bags</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('jewellery')">Jewellery</a></li>
+            <li><a href="#store" onclick="showStoreView(); filterByCategory('perfumes')">Perfumes</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
           <h4>Quick Links</h4>
           <ul class="footer-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#dressing-room">Dressing Room</a></li>
-            <li><a href="#about-owner">About Aisha Ibrahim</a></li>
-            <li><a href="#contact">Our Atelier</a></li>
+            <li><a href="#home" onclick="showStoreView()">Home</a></li>
+            <li><a href="#dressing-room" onclick="showDressingRoomView(event)">Dressing Room</a></li>
+            <li><a href="#about-owner" onclick="showStoreView()">About Aisha Ibrahim</a></li>
+            <li><a href="#contact" onclick="showStoreView()">Our Atelier</a></li>
             <li><a href="https://wa.me/2348064474487" target="_blank" rel="noopener">Direct WhatsApp Support</a></li>
           </ul>
         </div>
@@ -402,7 +366,6 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="app.js"></script>
 </body>
 </html>
