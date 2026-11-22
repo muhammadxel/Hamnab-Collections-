@@ -458,7 +458,35 @@ _Please review the order and photos, confirm availability, and provide payment d
    INTERACTIVE DRESSING ROOM ENGINE
    ========================================================================== */
 
-const BASE_CEO_IMAGE = "ceo-base.jpg"; // Replace with your Cloudinary URL of CEO in white/milk base dress
+const BASE_CEO_IMAGE = "ceo-base.jng"; // Replace with your Cloudinary URL of CEO in white/milk base dress
+// Switch to Dedicated Dressing Room View (Hides Store Sections)
+window.showDressingRoomView = function(e) {
+  if (e) e.preventDefault();
+  const mainSections = ['home', 'store', 'bespoke', 'about-owner', 'contact'];
+  mainSections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  const dressingRoom = document.getElementById('dressing-room');
+  if (dressingRoom) {
+    dressingRoom.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
+
+// Return to Main Store View (Hides Dressing Room)
+window.showStoreView = function() {
+  const dressingRoom = document.getElementById('dressing-room');
+  if (dressingRoom) dressingRoom.style.display = 'none';
+
+  const mainSections = ['home', 'store', 'bespoke', 'about-owner', 'contact'];
+  mainSections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'block';
+  });
+};
+
 let stageAngle = 0;
 let autoSpinInterval = null;
 let activeTryOnProduct = null;
@@ -573,7 +601,7 @@ function initDressingRoom() {
     vidEl.style.display = 'none';
     imgEl.style.display = 'block';
     imgEl.src = BASE_CEO_IMAGE;
-    pill.textContent = "Base Look: Classic Milk Inner Dress";
+    pill.textContent = "Base Look: Classic White Inner Dress";
     actionBar.style.display = 'none';
     renderWardrobeRack();
   });
